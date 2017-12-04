@@ -40,6 +40,9 @@
 #include "utils.h"
 #include "ustring.h"
 #include "diskchange.h"
+#ifdef CONFIG_LCD_DISPLAY
+#include "display_lcd.h"
+#endif
 
 static const char PROGMEM autoswap_lst_name[] = "AUTOSWAP.LST";
 static const char PROGMEM autoswap_gen_name[] = "AUTOSWAP.GEN"; // FIXME: must be 15 chars or less
@@ -169,6 +172,9 @@ static uint8_t mount_line(void) {
     buffer_start = command_buffer;
   }
 
+#ifdef CONFIG_LCD_DISPLAY
+  DS_CD((char *)command_buffer);
+#endif
   /* recode entry if neccessary */
   if (globalflags & SWAPLIST_ASCII)
     asc2pet(buffer_start);

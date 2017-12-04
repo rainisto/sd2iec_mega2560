@@ -95,6 +95,11 @@ ifeq ($(CONFIG_REMOTE_DISPLAY),y)
   NEED_I2C := y
 endif
 
+ifeq ($(CONFIG_LCD_DISPLAY),y)
+  SRC += display_lcd.c lcd.c
+#  NEED_I2C := y
+endif
+
 ifeq ($(CONFIG_P00CACHE),y)
   SRC += p00cache.c
 endif

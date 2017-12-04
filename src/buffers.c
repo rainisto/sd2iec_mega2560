@@ -30,7 +30,10 @@
 #include "ff.h"
 #include "led.h"
 #include "buffers.h"
-
+#ifdef CONFIG_LCD_DISPLAY
+#include "display_lcd.h"
+#include "iec.h"
+#endif
 dh_t    matchdh;
 uint8_t ops_scratch[33];
 
@@ -224,6 +227,10 @@ void free_buffer(buffer_t *buffer) {
 		active_buffers--;
 
 	update_leds();
+
+#ifdef CONFIG_LCD_DISPLAY
+  if (active_buffers == 0 && !(led_state & LED_ERROR)) DS_READY(device_address);
+#endif
 }
 
 /**

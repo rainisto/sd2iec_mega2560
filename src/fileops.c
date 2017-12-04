@@ -45,6 +45,9 @@
 #include "utils.h"
 #include "wrapops.h"
 #include "fileops.h"
+#ifdef CONFIG_LCD_DISPLAY
+#include "display_lcd.h"
+#endif
 
 /* ------------------------------------------------------------------------- */
 /*  global variables                                                         */
@@ -357,7 +360,9 @@ static uint8_t dir_refill(buffer_t *buf) {
  * used to pad a raw directory to its correct size.
  */
 static uint8_t rawdir_dummy_refill(buffer_t *buf) {
-  if (buf->pvt.dir.counter++)
+//  if (buf->pvt.dir.counter++)
+// jonni
+  if (buf->pvt.dir.filetype++)
     buf->position = 0;
   else
     buf->position = 2;
@@ -814,7 +819,9 @@ void file_open(uint8_t secondary) {
   buf = find_buffer(secondary);
   if (buf != NULL) {
     /* FIXME: What should we do if an error occurs? */
-    cleanup_and_free_buffer(buf);
+    //cleanup_and_free_buffer(buf);
+    buf->cleanup(buf);
+    free_buffer(buf);
   }
 
   /* Assume everything will go well unless proven otherwise */
@@ -835,6 +842,9 @@ void file_open(uint8_t secondary) {
 
   /* Direct access? */
   if (command_buffer[0] == '#') {
+#ifdef CONFIG_LCD_DISPLAY
+    DS_LOAD((const char *) command_buffer);
+#endif
     open_buffer(secondary);
     return;
   }
@@ -910,6 +920,9 @@ void file_open(uint8_t secondary) {
 
   /* Load directory? */
   if (command_buffer[0] == '$') {
+#ifdef CONFIG_LCD_DISPLAY
+    DS_LOAD((const char *) command_buffer);
+#endif
     load_directory(secondary);
     return;
   }
@@ -988,7 +1001,15 @@ void file_open(uint8_t secondary) {
       filetype = TYPE_SEQ;
   }
 
+#ifdef CONFIG_LCD_DISPLAY
+  if (mode == OPEN_READ) {
+    DS_LOAD((const char *) command_buffer);
+  }
+#endif
   if (mode == OPEN_WRITE) {
+#ifdef CONFIG_LCD_DISPLAY
+    DS_SAVE((const char * ) command_buffer);
+#endif
     if (res == 0) {
       /* Match found */
       if (command_buffer[0] == '@') {

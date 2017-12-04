@@ -47,6 +47,9 @@
 #include "ustring.h"
 #include "utils.h"
 
+#ifdef CONFIG_LCD_DISPLAY
+#include "display_lcd.h"
+#endif
 
 #if defined(__AVR__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 1))
 int main(void) __attribute__((OS_main));
@@ -57,12 +60,36 @@ int main(void) {
   system_init_early();
   leds_init();
 
+#ifdef CONFIG_LCD_DISPLAY
+  /* initialize display, cursor off */
+  DS_INIT;
+#endif
   set_busy_led(1);
   set_dirty_led(0);
 
   /* Due to an erratum in the LPC17xx chips anything that may change */
   /* peripheral clock scalers must come before system_init_late()    */
   uart_init();
+#ifdef CONFIG_LCD_DISPLAY
+  uart_putcrlf();
+  uart_puts_P(PSTR("\n\nLCD: "));
+  switch(lcd_controller_type())
+  {
+  case 4:
+         uart_puts_P(PSTR("HD44780 "));
+         break;
+  case 7:
+         uart_puts_P(PSTR("ST7036 "));
+         break;
+  default:
+         uart_puts_P(PSTR("none "));
+         break;
+  }
+  uart_putcrlf();
+
+  /* clear display and home cursor */
+  DS_CLR;
+#endif
 #ifndef SPI_LATE_INIT
   spi_init(SPI_SPEED_SLOW);
 #endif
@@ -88,11 +115,12 @@ int main(void) {
   filesystem_init(0);
   change_init();
 
-  uart_puts_P(PSTR("\r\nsd2iec " VERSION " #"));
+  uart_puts_P(PSTR("\r\nsd2iec " VERSION " jonni #"));
   uart_puthex(device_address);
   uart_putcrlf();
 
-#ifdef CONFIG_REMOTE_DISPLAY
+//#ifdef CONFIG_REMOTE_DISPLAY
+#if defined(CONFIG_REMOTE_DISPLAY) || defined(CONFIG_LCD_DISPLAY)
   /* at this point all buffers should be free, */
   /* so just use the data area of the first to build the string */
   uint8_t *strbuf = buffers[0].data;
@@ -101,6 +129,13 @@ int main(void) {
   if (display_init(ustrlen(strbuf), strbuf)) {
     display_address(device_address);
     display_current_part(0);
+    uart_puts_P(PSTR("\r\nInit OK " VERSION " jonni #"));
+    uart_puthex(device_address);
+    uart_putcrlf();
+  } else {
+    uart_puts_P(PSTR("\r\nInit FAILED " VERSION " jonni #"));
+    uart_puthex(device_address);
+    uart_putcrlf();
   }
 #endif
 
@@ -117,6 +152,21 @@ int main(void) {
     }
     reset_key(0xff);
   }
+#endif
+
+#ifdef CONFIG_LCD_DISPLAY
+
+  DS_READY(device_address);
+  fs_mode = 0;
+
+  /* clear display and home cursor */
+  DS_CLR;
+  DS_LOGO;
+
+  _delay_ms(1000);
+
+  /* put string to display (line 1) with linefeed */
+  DS_TITLE;
 #endif
 
   bus_mainloop();

@@ -32,7 +32,9 @@
 #include "iec.h"
 #include "timer.h"
 #include "ustring.h"
+#include "display_lcd.h"
 #include "eeprom-conf.h"
+#include "uart.h"
 
 uint8_t rom_filename[ROM_NAME_LENGTH+1];
 
@@ -69,6 +71,7 @@ static EEMEM struct {
   uint16_t drvconfig1;
   uint8_t  imagedirs;
   uint8_t  romname[ROM_NAME_LENGTH];
+  uint8_t  lcdcontrast;
 } __attribute__((packed)) storedconfig;
 
 /**
@@ -145,6 +148,14 @@ void read_configuration(void) {
   if (size > 29)
     eeprom_read_block(rom_filename, &storedconfig.romname, ROM_NAME_LENGTH);
 
+#ifdef CONFIG_LCD_DISPLAY
+
+  // andi6510: read lcd contrast setting and write to display
+  lcdcontrast = eeprom_read_byte(&storedconfig.lcdcontrast);
+  DS_CONTRAST(lcdcontrast);
+
+#endif
+
   /* Prevent problems due to accidental writes */
   eeprom_safety();
 }
@@ -173,7 +184,9 @@ void write_configuration(void) {
   eeprom_write_byte(&storedconfig.imagedirs, image_as_dir);
   memset(rom_filename+ustrlen(rom_filename), 0, sizeof(rom_filename)-ustrlen(rom_filename));
   eeprom_write_block(rom_filename, &storedconfig.romname, ROM_NAME_LENGTH);
-
+#ifdef CONFIG_LCD_DISPLAY
+  eeprom_write_byte(&storedconfig.lcdcontrast, lcdcontrast);
+#endif
   /* Calculate checksum over EEPROM contents */
   checksum = 0;
   for (i=2;i<sizeof(storedconfig);i++)
