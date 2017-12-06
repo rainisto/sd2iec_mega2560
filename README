@@ -947,3 +947,20 @@ ATN goes to PD3 (marked 18).
 GND goes to any GND (you can find multiple grounds on the board, there's one located next to pin #53).
 The RESET pin can be skipped, sd2iec doesn't need this for full operation.
 
+NEXT BUTTON PG0 D41
+POWERLED    PG1 D40
+PREV BUTTON PG2 D39
+
+PC1  RS    D36 LCD
+PC2  RW    D35 LCD
+PC3  E     D34 LCD
+PC4  DB4   D33 LCD
+PC5  DB5   D32 LCD
+PC6  DB6   D31 LCD
+PC7  DB7   D30 LCD
+
+LED1   PB7 D13 (connected on hardware already)
+LEDRED PH3 (todo green/red) D6
+
+Soft SDA PA1 D23
+Soft SCL PA0 D22

@@ -1334,11 +1334,12 @@ static inline void toggle_dirty_led(void)
 #define IEC_PORT  PORTD
 
 // Pins assigned for the IEC lines
-#define IEC_PIN_ATN   PD3
-#define IEC_PIN_DATA  PD2
-#define IEC_PIN_CLOCK PD1
-#define IEC_PIN_SRQ   PD0
+#define IEC_PIN_ATN   PD3  // Punainen
+#define IEC_PIN_DATA  PD2  // Valkoinen
+#define IEC_PIN_CLOCK PD1  // Keltainen
+#define IEC_PIN_SRQ   PD0  // Vihreä
 
+// jonni
 // Use separate input/output lines?
 // The code assumes that the input is NOT inverted, but the output is.
 //#define IEC_SEPARATE_OUT
@@ -1391,23 +1392,23 @@ static inline void iec_clock_int_setup(void)
 static inline rawbutton_t buttons_read(void)
 {
 	// OPTIONAL: Attach/Implement buttons on some GPIO.
-	return 0;
-//	return PING bitand (BUTTON_NEXT bitor BUTTON_PREV);
+//	return 0;
+	return PING bitand (BUTTON_NEXT bitor BUTTON_PREV);
 }
 
 static inline void buttons_init(void)
 {
 	// OPTIONAL: Attach/Implement buttons on some GPIO.
-//	DDRG  &= (uint8_t)~(BUTTON_NEXT | BUTTON_PREV);
-//	PORTG |= BUTTON_NEXT | BUTTON_PREV;
+	DDRG  &= (uint8_t)~(BUTTON_NEXT | BUTTON_PREV);
+	PORTG |= BUTTON_NEXT | BUTTON_PREV;
 }
 
 // Software I2C lines for the RTC and display
-#define SOFTI2C_PORT    PORTC
-#define SOFTI2C_PIN     PINC
-#define SOFTI2C_DDR     DDRC
-#define SOFTI2C_BIT_SCL PC4
-#define SOFTI2C_BIT_SDA PC5
+#define SOFTI2C_PORT    PORTA
+#define SOFTI2C_PIN     PINA
+#define SOFTI2C_DDR     DDRA
+#define SOFTI2C_BIT_SCL PA0
+#define SOFTI2C_BIT_SDA PA1
 #define SOFTI2C_DELAY   6
 
 
