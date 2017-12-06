@@ -1,6 +1,7 @@
 /*
    SD2IEC LCD - SD/MMC to Commodore IEC bus controller with LCD support.
    Created 2008,2009 by Sascha Bader <sbader01@hotmail.com>
+   Mega2560 port 2017 by Jonni Rainisto <jonni.rainisto@gmail.com>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -27,7 +28,6 @@
 uint8_t buffer_msg[3];
 uint8_t fs_mode;
 uint8_t lcdcontrast;  // andi6510: global LCD contrast setting
-
 
 static const char  mychars[64] PROGMEM = {
 			0x00, 0x01, 0x07, 0x0F, 0x0F, 0x1E, 0x1C, 0x1C,
@@ -56,9 +56,9 @@ void lcd_clrline(int line)
 	{
 		lcd_gotoxy(0,line);
 
-		for (int i=0; i < MAXLINELENGHT; i++)
+		for (int i=0; i < LCD_DISP_LENGTH; i++)
 		{
-    		lcd_putc(0x20);
+			lcd_putc(0x20);
 		}
 		lcd_gotoxy(0,line);
 	}
@@ -140,13 +140,13 @@ void lcd_ready(uint8_t dev_addr)
 
 	if (lcd_controller_type() != 0)
 	{
-		//memset(buffer_da,0,sizeof(buffer_da));
+		// memset(buffer_da,0,sizeof(buffer_da));
 		lcd_clrline(1);
 		lcd_puts_p(PSTR("READY:"));
 		*msg++ = '0' + dev_addr/10;
 		*msg++ = '0' + dev_addr%10;
 		*msg++ = '\0';
-		lcd_puts((char*)buffer_msg); 
+		lcd_puts((char*)buffer_msg);
 	}
 }
 
@@ -156,16 +156,15 @@ void lcd_path(char * fs_path)
 
 	if (lcd_controller_type() != 0)
 	{
-		//memset(buffer_da,0,sizeof(buffer_da));
+		// memset(buffer_da,0,sizeof(buffer_da));
 		lcd_clrline(0);
 		if (fs_mode == 0) *msg++ = 'D';
-		else 
-		   *msg++ = 'I';
-	//    *msg++ = '0' + fs_mode%10;
+		else *msg++ = 'I';
+	        // *msg++ = '0' + fs_mode%10;
 		*msg++ = '\0';
-		lcd_puts((char*)buffer_msg); 
+		lcd_puts((char*)buffer_msg);
 		lcd_puts_p(PSTR(":"));
-		lcd_puts((char*)fs_path); 
+		lcd_puts((char*)fs_path);
 	}
 }
 
@@ -175,9 +174,9 @@ void lcd_contrast(uint8_t contrast)
 	if (lcd_controller_type() == 7)
 	{
 		lcdcontrast = contrast;
-		lcd_command(0x29); // activate instruction table 1
+		lcd_command(0x29);                            // activate instruction table 1
 		lcd_command(0x50 | ((0x30 & contrast) >> 4)); // icon off, booster off, contrast XX....
 		lcd_command(0x70 |  (0x0F & contrast)      ); // contrast ...XXXX
-		lcd_command(0x28); // activate instruction table 0
+		lcd_command(0x28);                            // activate instruction table 0
 	}
 }

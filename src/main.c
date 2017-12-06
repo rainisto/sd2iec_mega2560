@@ -115,12 +115,11 @@ int main(void) {
   filesystem_init(0);
   change_init();
 
-  uart_puts_P(PSTR("\r\nsd2iec " VERSION " jonni #"));
+  uart_puts_P(PSTR("\r\nsd2iec " VERSION " #"));
   uart_puthex(device_address);
   uart_putcrlf();
 
-//#ifdef CONFIG_REMOTE_DISPLAY
-#if defined(CONFIG_REMOTE_DISPLAY) || defined(CONFIG_LCD_DISPLAY)
+#ifdef CONFIG_REMOTE_DISPLAY
   /* at this point all buffers should be free, */
   /* so just use the data area of the first to build the string */
   uint8_t *strbuf = buffers[0].data;
@@ -129,14 +128,7 @@ int main(void) {
   if (display_init(ustrlen(strbuf), strbuf)) {
     display_address(device_address);
     display_current_part(0);
-    uart_puts_P(PSTR("\r\nInit OK " VERSION " jonni #"));
-    uart_puthex(device_address);
-    uart_putcrlf();
-  } else {
-    uart_puts_P(PSTR("\r\nInit FAILED " VERSION " jonni #"));
-    uart_puthex(device_address);
-    uart_putcrlf();
-  }
+  } 
 #endif
 
   set_busy_led(0);
@@ -167,6 +159,12 @@ int main(void) {
 
   /* put string to display (line 1) with linefeed */
   DS_TITLE;
+
+#if LCD_LINES==4
+  lcd_gotoxy(0,3);
+  lcd_puts_p(PSTR("rainisto@iki.fi"));
+#endif
+
 #endif
 
   bus_mainloop();

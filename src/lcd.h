@@ -6,6 +6,7 @@
 
    SD2IEC LCD - SD/MMC to Commodore IEC bus controller with LCD support.
    Created 2008,2009 by Sascha Bader <sbader01@hotmail.com>
+   Mega2560 port 2017 by Jonni Rainisto <jonni.rainisto@gmail.com>
 
    Some defines to select different hardware variants were added.
 
@@ -70,13 +71,22 @@
  *  @name  Definitions for Display Size
  *  Change these definitions to adapt setting to your display
  */
-#define LCD_LINES           2     /**< number of visible lines of the display */
+#define LCD_LINES           4     /**< number of visible lines of the display */
+#if LCD_LINES==4                    /**< line lenght value is currently unused */
+  #define LCD_LINE_LENGTH  0x20     /**< internal line length of the display    */
+#else
+  #define LCD_LINE_LENGTH  0x40     /**< internal line length of the display    */
+#endif
 #define LCD_DISP_LENGTH    16     /**< visibles characters per line of the display */
-#define LCD_LINE_LENGTH  0x40     /**< internal line length of the display    */
 #define LCD_START_LINE1  0x00     /**< DDRAM address of first char of line 1 */
 #define LCD_START_LINE2  0x40     /**< DDRAM address of first char of line 2 */
-#define LCD_START_LINE3  0x14     /**< DDRAM address of first char of line 3 */
-#define LCD_START_LINE4  0x54     /**< DDRAM address of first char of line 4 */
+#if LCD_DISP_LENGTH==20
+  #define LCD_START_LINE3  0x14     /**< DDRAM address of first char of line 3 */
+  #define LCD_START_LINE4  0x54     /**< DDRAM address of first char of line 4 */
+#else
+  #define LCD_START_LINE3  0x10     /**< DDRAM address of first char of line 3 */
+  #define LCD_START_LINE4  0x50     /**< DDRAM address of first char of line 4 */
+#endif
 #define LCD_WRAP_LINES      0     /**< 0: no wrap, 1: wrap at end of visibile line */
 
 
@@ -113,12 +123,12 @@
 #define LCD_DATA1_PIN    5            /**< pin for 4bit data bit 1  */
 #define LCD_DATA2_PIN    6            /**< pin for 4bit data bit 2  */
 #define LCD_DATA3_PIN    7            /**< pin for 4bit data bit 3  */
-#define LCD_RS_PORT      PORTB        /**< port for RS line         */
-#define LCD_RS_PIN       0            /**< pin  for RS line         */
-#define LCD_RW_PORT      PORTB        /**< port for RW line         */
-#define LCD_RW_PIN       1            /**< pin  for RW line         */
-#define LCD_E_PORT       PORTB        /**< port for Enable line     */
-#define LCD_E_PIN        2            /**< pin  for Enable line     */
+#define LCD_RS_PORT      PORTC        /**< port for RS line         */
+#define LCD_RS_PIN       1            /**< pin  for RS line         */
+#define LCD_RW_PORT      PORTC        /**< port for RW line         */
+#define LCD_RW_PIN       2            /**< pin  for RW line         */
+#define LCD_E_PORT       PORTC        /**< port for Enable line     */
+#define LCD_E_PIN        3            /**< pin  for Enable line     */
 
 #endif
 /* Lars Pontoppidan variant (larsp) */

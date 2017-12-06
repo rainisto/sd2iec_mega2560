@@ -457,7 +457,7 @@ static void run_loader(uint16_t address) {
         address == pgm_read_word(&ptr->address)) {
       /* Found it */
 #ifdef CONFIG_LCD_DISPLAY
-                  DS_SHOWP(1,"LOADER FOUND");
+      DS_SHOWP(1,"LOADER FOUND");
 #endif
       handler   = (fastloader_handler_t)pgm_read_word(&ptr->handler);
       parameter = pgm_read_byte(&ptr->parameter);
@@ -1913,6 +1913,16 @@ static void parse_xcommand(void) {
        {
            DS_SHOW(1,(char *)str);
        }
+#if LCD_LINES==4
+    if (command_buffer[2]=='1')
+       {
+           DS_SHOW(2,(char *)str);
+       }
+    if (command_buffer[2]=='2')
+       {
+           DS_SHOW(3,(char *)str);
+       }
+#endif
     if (command_buffer[2]=='C')
        {
            DS_CTRL((char *)str);
@@ -1923,6 +1933,9 @@ static void parse_xcommand(void) {
     /* About */
     DS_TITLE;
     DS_SHOWP(1,"2009 by S. Bader");
+#if LCD_LINES==4
+    DS_SHOWP(2,"2017 by Rainisto");
+#endif
     break;
 
    case 'G':

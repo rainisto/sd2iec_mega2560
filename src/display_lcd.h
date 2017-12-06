@@ -1,6 +1,7 @@
 /*
    SD2IEC LCD - SD/MMC to Commodore IEC bus controller with LCD support.
    Created 2008,2009 by Sascha Bader <sbader01@hotmail.com>
+   Mega2560 port 2017 by Jonni Rainisto <jonni.rainisto@gmail.com>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,8 +23,6 @@
 #define DISPLAY_LCD
 
 #include "lcd.h"
-
-#define MAXLINELENGHT 20
 
 #define DS_CLR lcd_clrscr();
 #define DS_CLRLINE(A) lcd_clrline(A);
