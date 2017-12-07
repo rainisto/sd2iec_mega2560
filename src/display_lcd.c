@@ -60,6 +60,15 @@ void lcd_clrline(int line)
 		{
 			lcd_putc(0x20);
 		}
+#if LCD_LINES==4 && LCD_WRAP_LINES==1
+                if (line==1) {
+			lcd_gotoxy(0,2);
+			for (int i=0; i < LCD_DISP_LENGTH-1; i++)
+			{
+				lcd_putc(0x20);
+			}
+                }
+#endif
 		lcd_gotoxy(0,line);
 	}
 }

@@ -87,7 +87,7 @@
   #define LCD_START_LINE3  0x10     /**< DDRAM address of first char of line 3 */
   #define LCD_START_LINE4  0x50     /**< DDRAM address of first char of line 4 */
 #endif
-#define LCD_WRAP_LINES      0     /**< 0: no wrap, 1: wrap at end of visibile line */
+#define LCD_WRAP_LINES      1     /**< 0: no wrap, 1: wrap at end of visibile line */
 
 
 #define LCD_IO_MODE      1         /**< 0: memory mapped mode, 1: IO port mode */

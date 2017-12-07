@@ -34,6 +34,7 @@ Title	:   HD44780U LCD library
 #include "lcd.h"
 
 static uint8_t lcd_autodetect = 0;
+static uint8_t lcd_written = 0;
 
 /*
 ** constants/macros
@@ -419,7 +420,7 @@ void lcd_gotoxy(uint8_t x, uint8_t y)
         lcd_command((1<<LCD_DDRAM)+LCD_START_LINE4+x);
 #endif
 	}
-
+    lcd_written=0;
 }/* lcd_gotoxy */
 
 
@@ -483,25 +484,26 @@ void lcd_putc(char c)
 				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE1,0);
 			}
 	#elif LCD_LINES==2
-			if ( pos == LCD_START_LINE1+LCD_DISP_LENGTH ) {
+			if ( pos == LCD_START_LINE1+LCD_DISP_LENGTH && lcd_written ) {
 				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE2,0);
-			}else if ( pos == LCD_START_LINE2+LCD_DISP_LENGTH ){
+			} else if ( pos == LCD_START_LINE2+LCD_DISP_LENGTH && lcd_written ){
 				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE1,0);
 			}
 	#elif LCD_LINES==4
-			if ( pos == LCD_START_LINE1+LCD_DISP_LENGTH ) {
-				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE2,0);
-			}else if ( pos == LCD_START_LINE2+LCD_DISP_LENGTH ) {
-				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE3,0);
-			}else if ( pos == LCD_START_LINE3+LCD_DISP_LENGTH ) {
-				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE4,0);
-			}else if ( pos == LCD_START_LINE4+LCD_DISP_LENGTH ) {
-				lcd_write((1<<LCD_DDRAM)+LCD_START_LINE1,0);
+			if ( pos == LCD_START_LINE1+LCD_DISP_LENGTH && lcd_written ) {
+				lcd_command((1<<LCD_DDRAM)+LCD_START_LINE2);
+			} else if ( pos == LCD_START_LINE2+LCD_DISP_LENGTH && lcd_written ) {
+				lcd_command((1<<LCD_DDRAM)+LCD_START_LINE3);
+			} else if ( pos == LCD_START_LINE3+LCD_DISP_LENGTH && lcd_written ) {
+				lcd_command((1<<LCD_DDRAM)+LCD_START_LINE4);
+			} else if ( pos == LCD_START_LINE4+LCD_DISP_LENGTH && lcd_written ) {
+				lcd_command((1<<LCD_DDRAM)+LCD_START_LINE1);
 			}
 	#endif
 			lcd_waitbusy();
 	#endif
 			lcd_write(c, 1);
+                        if (!lcd_written) lcd_written++;
 		}
 	}
 }/* lcd_putc */
