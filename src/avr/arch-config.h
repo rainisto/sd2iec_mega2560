@@ -1393,7 +1393,8 @@ static inline rawbutton_t buttons_read(void)
 {
 	// OPTIONAL: Attach/Implement buttons on some GPIO.
 //	return 0;
-	return PING bitand (BUTTON_NEXT bitor BUTTON_PREV);
+//	return PING bitand (BUTTON_NEXT bitor BUTTON_PREV);
+        return PING & (BUTTON_NEXT | BUTTON_PREV);
 }
 
 static inline void buttons_init(void)
