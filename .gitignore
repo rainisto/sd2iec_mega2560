@@ -1,0 +1,17 @@
+.*
+*.o
+*.a
+*.s
+*.lst
+*~
+*.bin
+*.hex
+*.map
+*.elf
+codedoc
+doxyinput
+obj-*
+*.prg
+*.d64
+*.d81
+
