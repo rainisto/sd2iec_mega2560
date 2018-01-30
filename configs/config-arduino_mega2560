@@ -62,6 +62,7 @@ CONFIG_LOADER_AR6=y
 CONFIG_LOADER_ELOAD1=y
 CONFIG_LOADER_MMZAK=y
 CONFIG_LOADER_N0SDOS=y
+CONFIG_LOADER_SAMSJOURNEY=y
 
 # Define this to adjust the turbo (loading part) of the arduino mega with a few cycles.
 # This MAY be dependant on crystal individuality.
